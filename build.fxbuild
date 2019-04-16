@@ -5,4 +5,5 @@
     <info/>
   </deploy>
   <signjar/>
+  <manifestEntries name="s" value="-Dprism.verbose=true"/>
 </anttasks:AntTask>

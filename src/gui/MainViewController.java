@@ -18,6 +18,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import model.services.DepartmentService;
+import model.services.SellerService;
 
 public class MainViewController implements Initializable {
 
@@ -32,7 +33,7 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemVendedorAction() {
-		loadView("/gui/SellerList.fxml", null);
+		loadView2("/gui/SellerList.fxml");
 	}
 
 	@FXML
@@ -67,6 +68,28 @@ public class MainViewController implements Initializable {
 			
 			T controller = loader.getController();
 			inizialingAction.accept(controller);
+		}
+		catch (IOException e) {
+			Alerts.showAlert("IO Exception", "Erro carregando a página", e.getMessage(), AlertType.ERROR);
+		}
+	}
+	
+	private synchronized void loadView2 (String absoluteNome) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteNome));
+			VBox newVBox = loader.load();
+			
+			Scene mainScene = Main.getMainScene();
+			VBox mainVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
+			
+			Node mainMenu = mainVBox.getChildren().get(0);
+			mainVBox.getChildren().clear();
+			mainVBox.getChildren().add(mainMenu);
+			mainVBox.getChildren().addAll(newVBox.getChildren());
+			
+			SellerListController controller = loader.getController();
+			controller.setSellerService(new SellerService ());
+			controller.updateTableView();			
 		}
 		catch (IOException e) {
 			Alerts.showAlert("IO Exception", "Erro carregando a página", e.getMessage(), AlertType.ERROR);

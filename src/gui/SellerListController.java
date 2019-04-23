@@ -30,7 +30,7 @@ import model.services.SellerService;
 
 public class SellerListController implements Initializable {
 
-	private  SellerService  service;
+	private SellerService service;
 	
 	@FXML
 	private TableView <Seller> tableViewVendedor;
@@ -51,7 +51,7 @@ public class SellerListController implements Initializable {
 	private TableColumn <Seller, Double> tableColumnSalarioBase;
 	
 	@FXML
-	private TableColumn<Seller, Department> tableColumnIdDepartamento;
+	private TableColumn <Seller, Department> tableColumnIdDepartamento;
 	
 	@FXML
 	private Button btNovo;
@@ -80,7 +80,7 @@ public class SellerListController implements Initializable {
 		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 		tableColumnDataNascimento.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
 		tableColumnSalarioBase.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
-		tableColumnIdDepartamento.setCellValueFactory(new PropertyValueFactory<>("department"));	
+		tableColumnIdDepartamento.setCellValueFactory(new PropertyValueFactory<>("departmentId"));
 		
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewVendedor.prefHeightProperty().bind(stage.heightProperty());
@@ -102,6 +102,7 @@ public class SellerListController implements Initializable {
 			
 			SellerFormController controller = loader.getController();
 			controller.setSeller(obj);
+			controller.setSellerService(new SellerService());
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage ();

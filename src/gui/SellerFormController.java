@@ -1,10 +1,13 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -24,6 +27,8 @@ public class SellerFormController implements Initializable {
 	private Seller entity;
 	
 	private SellerService service;
+	
+	private List <DataChangeListener> dataChangeListener = new ArrayList <>();
 	
 	@FXML
 	private TextField txtId;
@@ -59,6 +64,10 @@ public class SellerFormController implements Initializable {
 	public void setSellerService (SellerService service) {
 		this.service = service;
 	}
+	
+	public void subscribeDataChangeListener (DataChangeListener listener) {
+		dataChangeListener.add(listener);
+	}
 		
 	@FXML
 	public void onBtSalvarAction (ActionEvent event) {
@@ -71,13 +80,21 @@ public class SellerFormController implements Initializable {
 		try {
 			entity = getFormData();
 			service.saveOrUpdate(entity);
+			notifyDataChangeListener();
 			Utils.currentStage(event).close();;
 		}
 		catch (DbException e)  {
 			Alerts.showAlert("Erro salvando objeto", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
-	
+
+	private void notifyDataChangeListener() {
+		for (DataChangeListener listener : dataChangeListener) {
+			listener.onDataChanged();
+		}
+		
+	}
+
 	private Seller getFormData() {
 		Seller obj = new Seller ();
 		
@@ -95,8 +112,8 @@ public class SellerFormController implements Initializable {
 	}
 
 	@FXML
-	public void onBtCancelarAction () {
-		System.out.println("onBtCancelarAction");
+	public void onBtCancelarAction (ActionEvent event) {
+		Utils.currentStage(event).close();;
 	}
 	
 	@Override

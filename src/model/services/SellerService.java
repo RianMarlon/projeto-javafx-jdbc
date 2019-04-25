@@ -22,5 +22,9 @@ public class SellerService {
 			dao.update(obj);
 		}
 	}
+	
+	public void remove (Seller obj) {
+		dao.deleteById(obj.getId());
+	}
 
 }

@@ -31,7 +31,7 @@
             <Label text="Nome" GridPane.rowIndex="1" />
             <Label text="Email" GridPane.rowIndex="2" />
             <Label text="Data de Nascimento" GridPane.rowIndex="3" />
-            <Label text="Salário base" GridPane.rowIndex="4" />
+            <Label text="Salário Base" GridPane.rowIndex="4" />
             <Label text="Id do Departamento" GridPane.rowIndex="5" />
             <TextField fx:id="txtId" editable="false" GridPane.columnIndex="1" />
             <TextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="1" />

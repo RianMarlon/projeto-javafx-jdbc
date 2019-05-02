@@ -142,7 +142,7 @@ public class SellerFormController implements Initializable {
 		obj.setBirthDate(Utils.tryParseToDate(txtDataNascimento.getText()));
 		
 		if (txtSalarioBase.getText() == null || txtSalarioBase.getText().trim().equals("")) {
-            exception.addErrors("BaseSalary", "Field cannot be empty");
+            exception.addErrors("salarioBase", "O campo não pode ser vazio");
 		}
 		
 		obj.setBaseSalary(Utils.tryParseToDouble(txtSalarioBase.getText()));

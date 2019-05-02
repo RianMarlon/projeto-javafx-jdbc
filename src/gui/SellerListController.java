@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -94,8 +95,27 @@ public class SellerListController implements Initializable, DataChangeListener {
 		tableColumnSalarioBase.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
 		tableColumnIdDepartamento.setCellValueFactory(new PropertyValueFactory<>("departmentId"));
 
+		initializeBirthDateColumn();
+		
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewVendedor.prefHeightProperty().bind(stage.heightProperty());
+	}
+
+	private void initializeBirthDateColumn() {
+		tableColumnDataNascimento.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+
+		tableColumnDataNascimento.setCellFactory(param -> new TableCell<>() {
+			private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+			@Override
+			public void updateItem(Date date, boolean empty) {
+				if (date == null) {
+					setText(null);
+				} else {
+					setText(sdf.format(date));
+				}
+			}
+		});
 	}
 
 	public void updateTableView() {
@@ -175,17 +195,16 @@ public class SellerListController implements Initializable, DataChangeListener {
 	}
 
 	private void removeEntity(Seller obj) {
-		Optional <ButtonType> result = Alerts.showConfirmation("Confirmação", "Tem certeza que você deseja deletar?");
-		
+		Optional<ButtonType> result = Alerts.showConfirmation("Confirmação", "Tem certeza que você deseja deletar?");
+
 		if (result.get() == ButtonType.OK) {
 			if (service == null) {
-				throw new IllegalStateException ("Service estava nulo");
+				throw new IllegalStateException("Service estava nulo");
 			}
 			try {
 				service.remove(obj);
 				updateTableView();
-			}
-			catch (DbIntegrityException e) {
+			} catch (DbIntegrityException e) {
 				Alerts.showAlert("Erro ao remover objeto", null, e.getMessage(), AlertType.ERROR);
 			}
 		}

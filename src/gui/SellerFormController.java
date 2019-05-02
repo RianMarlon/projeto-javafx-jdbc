@@ -1,8 +1,8 @@
 package gui;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -32,6 +32,8 @@ public class SellerFormController implements Initializable {
 	private SellerService service;
 	
 	private List <DataChangeListener> dataChangeListener = new ArrayList <>();
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	@FXML
 	private TextField txtId;
@@ -115,20 +117,17 @@ public class SellerFormController implements Initializable {
 	}
 
 	private Seller getFormData() {
+		clearErrorLabels();
 		Seller obj = new Seller ();
-		
-		ValidationException exception = new ValidationException ("Erro de  validação");
+		ValidationException exception = new ValidationException ("Erro de validação");
 		
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
 		
 		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) {
 			exception.addErrors("nome", "O campo não pode ser vazio");
 		}
-		obj.setName(txtNome.getText());
 		
-		if (exception.getErrors().size() > 0) {
-			throw exception;
-		}
+		obj.setName(txtNome.getText());
 		
 		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
 			exception.addErrors("email", "O campo não pode ser vazio");
@@ -136,42 +135,29 @@ public class SellerFormController implements Initializable {
 
 		obj.setEmail(txtEmail.getText());
 		
-		if (exception.getErrors().size() > 0) {
-			throw exception;
-		}
-		
 		if (txtDataNascimento.getText() == null || txtDataNascimento.getText().trim().equals("")) {
 			exception.addErrors("dataNascimento", "O campo não pode ser vazio");
 		}
 		
 		obj.setBirthDate(Utils.tryParseToDate(txtDataNascimento.getText()));
 		
-		if (exception.getErrors().size() > 0) {
-			throw exception;
-		}
-		
 		if (txtSalarioBase.getText() == null || txtSalarioBase.getText().trim().equals("")) {
-			exception.addErrors("salalarioBase", "O campo não pode ser vazio");
+            exception.addErrors("BaseSalary", "Field cannot be empty");
 		}
 		
 		obj.setBaseSalary(Utils.tryParseToDouble(txtSalarioBase.getText()));
-		
-		if (exception.getErrors().size() > 0) {
-			throw exception;
-		}
 		
 		if (txtDepartamentoId.getText() == null || txtDepartamentoId.getText().trim().equals("")) {
 			exception.addErrors("idDepartamento", "O campo não pode ser vazio");
 		}
 		
-		Seller novo = DaoFactory.createSellerDao().findById(Utils.tryParseToInt(txtDepartamentoId.getText()));
-		obj.setDepartment(novo.getDepartment());
-		
-
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
 
+		Seller novo = DaoFactory.createSellerDao().findById(Utils.tryParseToInt(txtDepartamentoId.getText()));
+		obj.setDepartment(novo.getDepartment());
+		
 		return obj;
 	}
 
@@ -197,16 +183,22 @@ public class SellerFormController implements Initializable {
 	public void updateFormData () {
 		if (entity  == null) {
 			throw new IllegalStateException ("Entity estava nulo");
+		} else {
+			
+			txtId.setText(String.valueOf(entity.getId()));
+			txtNome.setText(entity.getName());
+			txtEmail.setText(entity.getEmail());
+			
+			if (entity.getBirthDate() != null) {
+				txtDataNascimento.setText(sdf.format(entity.getBirthDate()));
+			}
+	        
+	        txtSalarioBase.setText(String.valueOf(entity.getBaseSalary()));
+	            
+	        if (entity.getDepartment() != null) {
+	        	txtDepartamentoId.setText(String.valueOf(entity.getId()));
+	        }
 		}
-		
-		entity.setBirthDate(new Date());
-		
-		txtId.setText(String.valueOf(entity.getId()));
-		txtNome.setText(entity.getName());
-		txtEmail.setText(entity.getEmail());
-		txtDataNascimento.setText(String.valueOf((entity.getBirthDate())));
-		txtSalarioBase.setText(String.valueOf(entity.getBaseSalary()));
-		txtDepartamentoId.setText(String.valueOf(entity.getId()));
 	}
 	
 	private void setErrorMessages (Map<String, String> errors) {
@@ -232,4 +224,12 @@ public class SellerFormController implements Initializable {
 			labelErrorIdDepartamento.setText(errors.get("idDepartamento"));
 		}
 	}
+	
+	 private void clearErrorLabels() {
+	        labelErrorNome.setText("");
+	        labelErrorEmail.setText("");
+	        labelErrorDataNascimento.setText("");
+	        labelErrorSalarioBase.setText("");
+	        labelErrorIdDepartamento.setText("");
+	    }
 }

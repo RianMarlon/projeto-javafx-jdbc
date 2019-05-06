@@ -217,7 +217,7 @@ public class SellerFormController implements Initializable {
 		}
 		
 		if (fields.contains("salarioBase")) {
-			labelErrorSalarioBase.setText(errors.get("salalarioBase"));
+			labelErrorSalarioBase.setText(errors.get("salarioBase"));
 		}
 		
 		if (fields.contains("idDepartamento")) {
